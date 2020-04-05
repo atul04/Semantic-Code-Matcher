@@ -2,7 +2,7 @@
 # @Date:   2020-04-05T11:41:42+05:30
 # @Email:  atulsahay01@gmail.com
 # @Last modified by:   atul
-# @Last modified time: 2020-04-05T15:41:11+05:30
+# @Last modified time: 2020-04-05T16:21:07+05:30
 
 # For the Setting of the use_cache values
 '''
@@ -118,5 +118,21 @@ if not use_cache:
               batch_size=batch_size,
               epochs=epochs,
               validation_split=0.12, callbacks=[csv_logger, model_checkpoint])
+
+from seq2seq_utils import Seq2Seq_Inference
+import pandas as pd
+
+seq2seq_inf = Seq2Seq_Inference(encoder_preprocessor=enc_pp,
+                                 decoder_preprocessor=dec_pp,
+                                 seq2seq_model=seq2seq_Model)
+
+demo_testdf = pd.DataFrame({'code':holdout_code, 'comment':holdout_comment, 'ref':''})
+
+print("Starting the evaluation on the holdout set")
+# This will return a BLEU Score
+seq2seq_inf.evaluate_model(input_strings=holdout_code,
+                           output_strings=holdout_comment,
+                           max_len=None)
+
 seq2seq_Model.save(OUTPUT_PATH/'code_summary_seq2seq_model.h5')
 Print("Model saved in",OUTPUT_PATH)
