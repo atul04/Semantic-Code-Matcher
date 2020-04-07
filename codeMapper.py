@@ -2,7 +2,7 @@
 # @Date:   2020-04-05T16:18:05+05:30
 # @Email:  atulsahay01@gmail.com
 # @Last modified by:   atul
-# @Last modified time: 2020-04-05T17:59:03+05:30
+# @Last modified time: 2020-04-07T07:23:55+05:30
 import dill as dpickle
 import numpy as np
 from ktext.preprocess import processor
@@ -36,9 +36,9 @@ parser.add_argument('-O','--output_file', type=str,required=False,
 
 args = vars(parser.parse_args())
 
-print(args['download'])
-print(args['input_file'])
-print(args['output_file'])
+# print(args['download'])
+# print(args['input_file'])
+# print(args['output_file'])
 
 
 # if download = True, it will download the model from the net.

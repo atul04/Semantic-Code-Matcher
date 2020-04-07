@@ -2,9 +2,9 @@
 # @Date:   2020-04-05T14:03:21+05:30
 # @Email:  atulsahay01@gmail.com
 # @Last modified by:   atul
-# @Last modified time: 2020-04-05T14:35:27+05:30
+# @Last modified time: 2020-04-07T07:32:16+05:30
 
-
+#
 import ast
 import glob
 import re
@@ -19,13 +19,35 @@ from sklearn.model_selection import train_test_split
 
 from general_utils import apply_parallel, flattenlist
 
+import argparse
+
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+parser = argparse.ArgumentParser(description='For the inference of the model')
+parser.add_argument('-t2t','--train_test_split',type=float,nargs='?',const=0.87,default=0.87,
+                   help='Train 2 Test split')
+parser.add_argument('-t2v','--train_valid_split', type=float,nargs='?',const=0.82,default=0.82,
+                   help='Train 2 valid split')
+# parser.add_argument('-O','--output_file', type=str,required=False,
+#                    help='Destination File which will contain the docstring')
+
+args = vars(parser.parse_args())
 
 EN = spacy.load('en')
 print("Done with loading the english corpora")
 
-
-
-
+train_test_split = float(args['train_test_split'])
+train_valid_split = float(args['train_valid_split'])
+print(train_test_split,train_valid_split)
+exit()
 # Read the data into a pandas dataframe, and parse out some meta-data
 print("Starting the download of the dataset......")
 df = pd.concat([pd.read_csv(f'https://storage.googleapis.com/kubeflow-examples/code_search/raw_data/00000000000{i}.csv') \
@@ -148,8 +170,8 @@ We want to avoid having code from the same repository in the training set as wel
 
 grouped = with_docstrings.groupby('nwo')
 # train, valid, test splits
-train, test = train_test_split(list(grouped), train_size=0.87, shuffle=True, random_state=8081)
-train, valid = train_test_split(train, train_size=0.82, random_state=8081)
+train, test = train_test_split(list(grouped), train_size=train_test_split, shuffle=True, random_state=8081)
+train, valid = train_test_split(train, train_size=train_valid_split, random_state=8081)
 train = pd.concat([d for _, d in train]).reset_index(drop=True)
 valid = pd.concat([d for _, d in valid]).reset_index(drop=True)
 test = pd.concat([d for _, d in test]).reset_index(drop=True)
